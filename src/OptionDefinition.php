@@ -3,8 +3,7 @@
 namespace Logikos\ClassOptions;
 
 
-class OptionDefinition
-{
+class OptionDefinition implements OptionDefinitionInterface {
     private $name;
     private $value;
     private $isSet = false;
@@ -79,10 +78,6 @@ class OptionDefinition
         $this->validationHook = $function;
     }
 
-    /**
-     * @param $value
-     * @return int
-     */
     private function checkPattern($value)
     {
         $match = preg_match($this->valuePattern, $value);
@@ -108,5 +103,8 @@ class OptionDefinition
         return true;
     }
 
+    public function __toString() {
+        return (string) $this->getValue();
+    }
 
 }

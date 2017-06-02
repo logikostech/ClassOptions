@@ -5,6 +5,7 @@ namespace Logikos\ClassOptions\Tests;
 use Logikos\ClassOptions\CanNotCallMethodAfterValueSetException;
 use Logikos\ClassOptions\InvalidOptionValueException;
 use Logikos\ClassOptions\OptionDefinition;
+use Logikos\ClassOptions\OptionDefinitionInterface;
 use PHPUnit\Framework\TestCase;
 
 class OptionDefinitionTest extends TestCase {
@@ -19,7 +20,7 @@ class OptionDefinitionTest extends TestCase {
         $o = new OptionDefinition($name);
         $this->assertSame($name, $o->getName());
     }
-    public function validNames() {
+    public function validNames() { // non-empty strings and ints
         return [
             ['string'], ['a'], [0], ['1.1']
         ];
@@ -33,9 +34,13 @@ class OptionDefinitionTest extends TestCase {
         $this->expectException(\Exception::class);
         new OptionDefinition($name);
     }
-    public function invalidNames() {
+    public function invalidNames() { // anything other than non-empty strings and ints
         return [
-            [null], [false], [true], [''], [1.1]
+            [null], [false], [true],
+            [''], [1.1],
+            [array()], [array(1)],
+            [new \stdClass],
+            [function(){}]
         ];
     }
 
@@ -140,9 +145,17 @@ class OptionDefinitionTest extends TestCase {
         $o->setValuePattern('is_array');
     }
 
+    public function testCanCastObjectAsString() {
+        $v = 'abc';
+        $o = $this->newOptionDefinition();
+        $o->setValue($v);
+        $this->assertSame($v, (string) $o);
+        $this->assertSame($v, "{$o}");
+    }
+
     /**
      * @param string $name
-     * @return OptionDefinition
+     * @return OptionDefinitionInterface
      */
     private function newOptionDefinition($name = 'foo') {
         return new OptionDefinition($name);
@@ -152,7 +165,7 @@ class OptionDefinitionTest extends TestCase {
      * @param $pattern
      * @param $value
      * @param $passOrFail
-     * @return OptionDefinition
+     * @return OptionDefinitionInterface
      */
     private function setOptionDefinitionWithPatternAndValue($pattern, $value, $passOrFail)
     {
