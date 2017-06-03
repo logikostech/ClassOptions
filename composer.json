@@ -1,10 +1,19 @@
 {
+  "name": "logikostech/class-options",
+  "homepage": "https://github.com/logikostech/class-options",
+  "description": "Class Options Manager",
+  "type": "library",
   "license": "MIT",
+  "authors": [{
+    "name": "Todd Empcke",
+    "email": "tempcke@logikostech.net"
+  }],
   "require": {
     "php": ">=5.6"
   },
   "require-dev": {
-    "phpunit/phpunit": ">=4.0"
+    "phpunit/phpunit": ">=4.0",
+    "techpivot/phalcon-ci-installer": "^1.0"
   },
   "autoload": {
     "psr-4": {
