@@ -13,7 +13,6 @@ cache:
 
 before_install:
   - composer install --prefer-source --no-interaction --ignore-platform-reqs
-  - vendor/bin/install-phalcon.sh
 
 script:
   - vendor/bin/phpunit tests/
