@@ -8,33 +8,32 @@
 
 namespace Logikos\ClassOptions;
 
-interface OptionDefinitionInterface
-{
-    public function isValidName($name);
+interface OptionDefinitionInterface {
+  public function isValidName($name);
 
-    public function getName();
+  public function getName();
 
-    public function setValue($value);
+  public function setValue($value);
 
-    public function getValue();
+  public function getValue();
 
-    public function isValueSet();
+  public function isValueSet();
 
-    public function setDefault($default);
+  public function setDefault($default);
 
-    public function getDefault();
+  public function getDefault();
 
-    public function setValuePattern($pattern);
+  public function setValuePattern($pattern);
 
-    public function getValuePattern();
+  public function getValuePattern();
 
-    public function isValidValue($value);
+  public function isValidValue($value);
 
-    public function setValidationHook(callable $function);
+  public function setValidationHook(callable $function);
 
-    public function makeRequired($bool = true);
+  public function makeRequired($bool = true);
 
-    public function isRequired();
+  public function isRequired();
 
-    public function isValid();
+  public function isValid();
 }

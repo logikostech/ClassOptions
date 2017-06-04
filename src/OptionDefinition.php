@@ -4,107 +4,113 @@ namespace Logikos\ClassOptions;
 
 
 class OptionDefinition implements OptionDefinitionInterface {
-    private $name;
-    private $value;
-    private $isSet = false;
-    private $defaultValue = null;
-    private $valuePattern;
-    private $validationHook;
-    private $valueMustBeSet = false;
+  private $name;
+  private $value;
+  private $isSet          = false;
+  private $defaultValue   = null;
+  private $valuePattern;
+  private $validationHook;
+  private $valueMustBeSet = false;
 
-    public function __construct($name) {
-        if (!$this->isValidName($name))
-            throw new InvalidOptionNameException;
-        $this->name = $name;
+  public function __construct($name) {
+    if (!$this->isValidName($name)) throw new InvalidOptionNameException;
+    $this->name = $name;
+  }
+
+  public function isValidName($name) {
+    if (is_integer($name)) return true;
+    if (is_string($name) && !empty($name)) return true;
+    return false;
+  }
+
+  public function getName() {
+    return $this->name;
+  }
+
+  public function setValue($value) {
+    if (!$this->isValidValue($value)) throw new InvalidOptionValueException;
+
+    $this->value = $value;
+    $this->isSet = true;
+  }
+
+  public function getValue() {
+    return $this->isValueSet() ? $this->value : $this->defaultValue;
+  }
+
+  public function isValueSet() {
+    return $this->isSet;
+  }
+
+  public function setDefault($default) {
+    $this->defaultValue = $default;
+  }
+
+  public function getDefault() {
+    return $this->defaultValue;
+  }
+
+  public function setValuePattern($pattern) {
+    if ($this->isSet) throw new CanNotCallMethodAfterValueSetException;
+    $this->valuePattern = $pattern;
+  }
+
+  public function getValuePattern() {
+    return $this->valuePattern;
+  }
+
+  public function isValidValue($value) {
+    if (!empty($this->valuePattern)) {
+      return $this->checkPattern($value);
     }
-
-    public function isValidName($name) {
-        if (is_integer($name)) return true;
-        if (is_string($name) && !empty($name)) return true;
-        return false;
+    if (!empty($this->validationHook)) {
+      return (bool) call_user_func($this->validationHook, $value);
     }
+    return true;
+  }
 
-    public function getName() {
-        return $this->name;
-    }
+  public function setValidationHook(callable $function) {
+    if ($this->isSet) throw new CanNotCallMethodAfterValueSetException;
+    $this->validationHook = $function;
+  }
 
-    public function setValue($value) {
-        if (!$this->isValidValue($value))
-            throw new InvalidOptionValueException;
+  private function checkPattern($value) {
+    $match = preg_match($this->valuePattern, $value);
+    if ($match === false) throw new InvalidValuePatternException();
+    return $match !== 0;
+  }
 
-        $this->value = $value;
-        $this->isSet = true;
-    }
+  public function makeRequired($bool = true) {
+    $this->valueMustBeSet = (bool) $bool;
+  }
 
-    public function getValue() {
-        return $this->isValueSet() ? $this->value : $this->defaultValue;
-    }
+  public function isRequired() {
+    return $this->valueMustBeSet;
+  }
 
-    public function isValueSet() {
-        return $this->isSet;
-    }
+  public function isValid() {
+    if ($this->isRequiredAndNotSet() || $this->isSetAndNotValid())
+      return false;
 
-    public function setDefault($default) {
-        $this->defaultValue = $default;
-    }
+    return true;
+  }
 
-    public function getDefault() {
-        return $this->defaultValue;
-    }
+  public function __toString() {
+    return (string) $this->getValue();
+  }
 
-    public function setValuePattern($pattern) {
-        if ($this->isSet)
-            throw new CanNotCallMethodAfterValueSetException;
-        $this->valuePattern = $pattern;
-    }
+  /**
+   * @return bool
+   */
+  protected function isRequiredAndNotSet() {
+    return $this->isRequired() && !$this->isSet;
+  }
 
-    public function getValuePattern() {
-        return $this->valuePattern;
-    }
-
-    public function isValidValue($value) {
-        if (!empty($this->valuePattern)) {
-            return $this->checkPattern($value);
-        }
-        if (!empty($this->validationHook)) {
-            return (bool) call_user_func($this->validationHook, $value);
-        }
-        return true;
-    }
-
-    public function setValidationHook(callable $function) {
-        if ($this->isSet)
-            throw new CanNotCallMethodAfterValueSetException;
-        $this->validationHook = $function;
-    }
-
-    private function checkPattern($value)
-    {
-        $match = preg_match($this->valuePattern, $value);
-        if ($match === false) throw new InvalidValuePatternException();
-        return $match !== 0;
-    }
-
-    public function makeRequired($bool = true) {
-        $this->valueMustBeSet = (bool) $bool;
-    }
-
-    public function isRequired() {
-        return $this->valueMustBeSet;
-    }
-
-    public function isValid() {
-        if ($this->isRequired() && !$this->isSet)
-            return false;
-
-        if ($this->isSet && !$this->isValidValue($this->value))
-            return false;
-
-        return true;
-    }
-
-    public function __toString() {
-        return (string) $this->getValue();
-    }
+  /**
+   * @return bool
+   */
+  protected function isSetAndNotValid() {
+    return $this->isSet && !$this->isValidValue($this->value);
+  }
 
 }
