@@ -37,7 +37,17 @@ class OptionDefinitionTest extends TestCase {
   }
 
   public function invalidNames() { // anything other than non-empty strings and ints
-    return [[null], [false], [true], [''], [1.1], [array()], [array(1)], [new \stdClass], [function() { }]];
+    return [
+        [null],
+        [false],
+        [true],
+        [''],
+        [1.1],
+        [array()],
+        [array(1)],
+        [new \stdClass],
+        [function() { }]
+    ];
   }
 
   public function testCanSetAndGetOptionValue() {
@@ -89,17 +99,21 @@ class OptionDefinitionTest extends TestCase {
   public function testCustomValidationHookFail_ThrowsException() {
     $this->expectException(InvalidOptionValueException::class);
     $o = $this->newOptionDefinition();
-    $o->setValidationHook(function($value) {
-      return is_int($value) && $value > 10;
-    });
+    $o->setValidationHook(
+        function($value) {
+          return is_int($value) && $value > 10;
+        }
+    );
     $o->setValue(1);
   }
 
   public function testCustomValidationHookPass() {
     $o = $this->newOptionDefinition();
-    $o->setValidationHook(function($value) {
-      return is_int($value) && $value > 10;
-    });
+    $o->setValidationHook(
+        function($value) {
+          return is_int($value) && $value > 10;
+        }
+    );
     $o->setValue(20);
   }
 
