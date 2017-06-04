@@ -13,7 +13,8 @@ trait ConfigurableTrait {
   }
 
   public function setClassOption($index, $value) {
-    if (!in_array($index, $this->availableClassOptions())) throw new UndefinedIndexException;
+    if (!in_array($index, $this->availableClassOptions()))
+      throw new UndefinedIndexException;
     $this->_classOptions[$index]->setValue($value);
   }
 
