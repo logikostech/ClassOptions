@@ -37,8 +37,19 @@ trait ConfigurableTrait {
     $this->_classOptions[$o->getName()] = $o;
   }
 
-  protected function addOption($name) {
-    $this->defineOption(new OptionDefinition($name));
+  protected function addOption($index) {
+    $this->defineOption(new OptionDefinition($index));
+  }
+
+  protected function getDefinedOption($index) {
+    if (!$this->hasDefinedOption($index))
+      throw new UndefinedIndexException($index);
+
+    return $this->_classOptions[$index];
+  }
+
+  protected function hasDefinedOption($index) {
+    return in_array($index, $this->availableClassOptions());
   }
 
   /**

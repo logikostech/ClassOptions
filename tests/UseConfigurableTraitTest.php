@@ -5,6 +5,7 @@ namespace Logikos\ClassOptions\Tests;
 use Logikos\ClassOptions\ConfigurableInterface;
 use Logikos\ClassOptions\ConfigurableTrait;
 use Logikos\ClassOptions\OptionDefinition;
+use Logikos\ClassOptions\UndefinedIndexException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -64,7 +65,7 @@ class UseConfigurableTraitTest extends TestCase implements ConfigurableInterface
     $this->assertValid();
   }
 
-  public function test_canNotAddValidationPatternAfterOptionIsSet() {
+  public function test_AddValidationPatternAfterOptionIsSet_ThrowsException() {
     $foo = new OptionDefinition('foo');
     $this->defineOption($foo);
     $this->setClassOption('foo', 1);
@@ -72,12 +73,31 @@ class UseConfigurableTraitTest extends TestCase implements ConfigurableInterface
     $foo->setValuePattern('/.+/');
   }
 
-  public function test_canNotAddValidationHookAfterOptionIsSet() {
+  public function test_AddValidationHookAfterOptionIsSet_ThrowsException() {
     $foo = new OptionDefinition('foo');
     $this->defineOption($foo);
     $this->setClassOption('foo', 1);
     $this->expectException(\Exception::class);
     $foo->setValidationHook('is_int');
+  }
+
+  public function test_hasDefinedOption() {
+    $index = 'foo';
+    $foo = new OptionDefinition($index);
+    $this->assertFalse($this->hasDefinedOption($index));
+    $this->defineOption($foo);
+    $this->assertTrue($this->hasDefinedOption($index));
+  }
+
+  public function test_whenCallingGetDefinedOptionWithUndefinedIndex_ThrowsException() {
+    $index = 'foo';
+    $this->expectException(UndefinedIndexException::class);
+    $this->getDefinedOption($index);
+  }
+  public function test_canGetOptionDefinition() {
+      $foo = new OptionDefinition('foo');
+      $this->defineOption($foo);
+      $this->assertSame($foo, $this->getDefinedOption('foo'));
   }
 
   private function assertValid() {
