@@ -4,7 +4,6 @@
 # Logikos\ClassOptions
 
 ## Usage
-
 Add it to any class like so:
 ```php
 <?php 
