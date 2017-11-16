@@ -1,4 +1,20 @@
-composer.phar
-/.idea/
+# IDE
+.idea/
+.project
+
+# cache
 /cache/
+
+# logs
+logs/
+*.log
+error_log
+
+# composer
 /vendor/
+composer.phar
+
+# Project
+phpunit.phar
+coveralls.phar
+/build/

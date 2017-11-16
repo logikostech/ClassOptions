@@ -1,4 +1,6 @@
 [![Travis CI](https://img.shields.io/travis/logikostech/class-options/master.svg)](https://travis-ci.org/logikostech/class-options)
+[![Coverage Status](https://coveralls.io/repos/github/logikostech/class-options/badge.svg?branch=master)](https://coveralls.io/github/logikostech/class-options?branch=master)
+[![CodeCov](https://codecov.io/gh/logikostech/class-options/branch/master/graph/badge.svg)](https://codecov.io/gh/logikostech/class-options)
 [![Software License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/logikostech/class-options/master/LICENSE)
 
 # Logikos\ClassOptions
